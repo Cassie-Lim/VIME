@@ -1,0 +1,21 @@
+channels:
+    - anaconda
+    - conda-forge
+    - pytorch
+dependencies:
+    - python=3.10
+    - pip
+    - pytorch
+    - gym-box2d
+    - pip:
+        - swig
+        - numpy<=1.24.0
+        - scipy
+        - loguru
+        - enlighten
+        - mujoco-py
+        - matplotlib
+        - jupyterlab
+        - ipywidgets
+        - stable-baselines[mpi]
+        - widgetsnbextension

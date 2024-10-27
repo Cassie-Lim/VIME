@@ -1,0 +1,14 @@
+swig
+gym
+gym[box2d]
+numpy<=1.24.0
+scipy
+torch
+loguru
+enlighten
+mujoco-py
+matplotlib
+jupyterlab
+ipywidgets
+stable-baselines[mpi]
+widgetsnbextension
