@@ -131,6 +131,66 @@ def plot_returns(
     fig.savefig(
         f'{ARTIFACT_DIRECTORY}/{method_name}_returns.png', format='png', dpi=300
     )
+def plot_returns_compare(
+        mean_returns1: List[float], std_returns1: List[float],
+        method_name1: str,
+        mean_returns2: List[float], std_returns2: List[float],
+        method_name2: str,
+        dynamic: bool = False
+    ):
+    if not os.path.exists(ARTIFACT_DIRECTORY):
+        os.makedirs(ARTIFACT_DIRECTORY)
+    
+    epochs = np.arange(len(mean_returns1))
+
+    # Convert lists to arrays for ease of calculation
+    mean_returns1 = np.array(mean_returns1)
+    std_returns1 = np.array(std_returns1)
+    mean_returns2 = np.array(mean_returns2)
+    std_returns2 = np.array(std_returns2)
+
+    # Smooth data for both sets
+    smoothed1 = moving_average(mean_returns1)
+    smoothed2 = moving_average(mean_returns2)
+
+    # Smooth boundaries for less sharp fill_between
+    low1 = moving_average(mean_returns1 - std_returns1)
+    high1 = moving_average(mean_returns1 + std_returns1)
+    low2 = moving_average(mean_returns2 - std_returns2)
+    high2 = moving_average(mean_returns2 + std_returns2)
+    epochs_smoothed = epochs[-len(smoothed1):]  # Adjust epochs for smoothed arrays
+
+    # Initialize plot
+    fig = plt.figure()
+    
+    # Plot first set
+    plt.plot(epochs_smoothed, smoothed1, color='r', label=f'{method_name1}')
+    plt.fill_between(epochs_smoothed, low1, high1, color='r', alpha=0.3)
+
+    # Plot second set
+    plt.plot(epochs_smoothed, smoothed2, color='b', label=f'{method_name2}')
+    plt.fill_between(epochs_smoothed, low2, high2, color='b', alpha=0.3)
+
+    # Adding labels and legends
+    plt.legend(loc='upper left')
+    plt.ylim(min(min(low1), min(low2)), max(max(high1), max(high2)))
+    plt.ylabel('Cumulative Rewards')
+    plt.xlabel('Epoch')
+    plt.title(f'Comparison: {method_name1} vs {method_name2}')
+    plt.tight_layout()
+    plt.show()
+
+    # Pause for updates if dynamic plotting is enabled
+    plt.pause(0.001)
+    display.display(plt.gcf())
+    if dynamic:
+        display.clear_output(wait=True)
+
+    # Save the plot
+    fig.savefig(
+        f'{ARTIFACT_DIRECTORY}/{method_name1}_vs_{method_name2}_returns.png', 
+        format='png', dpi=300
+    )
 
 
 def demo_policy(

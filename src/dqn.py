@@ -53,7 +53,8 @@ def optimize_Q(
         target_Q: ValueFunctionQ,
         gamma: float,
         memory: ReplayBuffer,
-        optimizer: Optimizer
+        optimizer: Optimizer,
+        with_vime=False,
 ):
     if len(memory) < memory.batch_size:
         return
@@ -72,8 +73,11 @@ def optimize_Q(
         tuple(map(lambda s: s is not None, batch.next_state)),
         type=torch.bool
     )
-
+    
     rewards = tensor(rewards)
+    if with_vime:
+        intrinsic_reward = Q.dynamics_model.intrinsic_reward(tensor(states)[nonterminal_mask], tensor(actions)[nonterminal_mask], tensor(valid_next_states)).detach()
+        rewards[nonterminal_mask] += intrinsic_reward
 
     # TODO: Update the Q-network
     # Hint: Calculate the target Q-values
@@ -99,7 +103,8 @@ def train_one_epoch(
         target_Q: ValueFunctionQ,
         memory: ReplayBuffer,
         optimizer: Optimizer,
-        gamma: float = 0.99
+        gamma: float = 0.99, 
+        with_vime=False
 ) -> float:
     # Make sure target isn't being trained
     Q.train()
@@ -125,7 +130,7 @@ def train_one_epoch(
 
         # Optimize Q-network if the replay buffer is sufficiently full
         if len(memory) >= memory.batch_size:
-            optimize_Q(Q, target_Q, gamma, memory, optimizer)
+            optimize_Q(Q, target_Q, gamma, memory, optimizer, with_vime)
         if done:
             break
 

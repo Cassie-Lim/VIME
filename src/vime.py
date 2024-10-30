@@ -17,8 +17,10 @@ class DynamicsModel(nn.Module):
         )
 
     def forward(self, state, action):
+        if len(action.shape) < 2 and len(state.shape) == 2:
+            action = action.unsqueeze(-1)
         x = torch.cat([state, action], dim=-1)
-        return self.fc(x)  # Output includes mean and log variance
+        return self.fc(x) 
 
 # Intrinsic reward based on information gain
 class VIME(nn.Module):
@@ -26,7 +28,7 @@ class VIME(nn.Module):
         super(VIME, self).__init__()
         self.dynamics_model = DynamicsModel(state_dim, action_dim)
         self.optimizer = optim.Adam(self.dynamics_model.parameters(), lr=lr)
-        self.beta = beta  # Scaling factor for intrinsic reward
+        self.beta = beta  
 
     def predict(self, state, action):
         mean_logvar = self.dynamics_model(state, action)

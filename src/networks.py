@@ -81,9 +81,10 @@ class Policy(nn.Module):
         TODO: Implement the forward method to compute the network output for the given state.
         You can use the self.network to forward the input.
         """
-        if len(state.shape) == 1:
-            state = state.reshape(1, -1)
-        logits = self.network(torch.from_numpy(state).to(DEVICE))
+        state_tensor = tensor(state)
+        if len(state_tensor.shape) < 2:
+            state_tensor = state_tensor.reshape(1, -1)
+        logits = self.network(state_tensor)
         return logits
 
 

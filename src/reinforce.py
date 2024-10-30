@@ -45,9 +45,7 @@ def train_one_epoch(
     # Action log probabilities and rewards per step (for calculating loss)
     epoch_log_probability_actions = []
     epoch_action_rewards = []
-    states = []
-    actions = []
-    next_states = []
+    
 
     # Loop through episodes
     while True:
@@ -58,6 +56,9 @@ def train_one_epoch(
         # Running total of this episode's rewards
         episode_reward: float = 0
         episode_rewards = []
+        states = []
+        actions = []
+        next_states = []
 
         # Reset the environment and get a fresh observation
         state, info = env.reset()
@@ -86,29 +87,30 @@ def train_one_epoch(
             done = terminated or truncated
             if done:
                 # TODO: Assign the episode reward to each timestep in the episode
-                discounted_rewards = compute_discounted_rewards(episode_rewards)
+                
                 if with_vime:
                     # Calculate intrinsic reward with VIME
                     shape = (len(states), -1)
                     intrinsic_rewards = policy.dynamics_model.intrinsic_reward(torch.tensor(states).reshape(shape).to(DEVICE), torch.tensor(actions).reshape(shape).to(DEVICE), torch.tensor(next_states).reshape(shape).to(DEVICE)).detach()
                     # print(intrinsic_rewards.sum())
-                    discounted_rewards = (np.array(discounted_rewards) + intrinsic_rewards.cpu().numpy()).tolist()
+                    episode_rewards = (np.array(episode_rewards) + intrinsic_rewards.cpu().numpy()).tolist()
                     # episode_reward += intrinsic_rewards.sum()
                 # epoch_action_rewards += [episode_reward] * (t + 1)
+                discounted_rewards = compute_discounted_rewards(episode_rewards)
                 epoch_action_rewards += discounted_rewards
                 break
 
     # TODO: Calculate the policy gradient loss
     l = loss(torch.stack(epoch_log_probability_actions).squeeze(), torch.tensor(epoch_action_rewards).to(DEVICE))
-    print(torch.stack(epoch_log_probability_actions).squeeze())
+    # print(torch.stack(epoch_log_probability_actions).squeeze())
     print(torch.tensor(epoch_action_rewards).to(DEVICE))
 
     # TODO: Perform backpropagation and update the policy parameters
     optimizer.zero_grad()
     l.backward()
-    print(l, terminated, truncated)
-    print(policy.network[0].weight.grad.mean())
-    print(policy.network[2].weight.grad.mean())
+    # print(l, terminated, truncated)
+    # print(policy.network[0].weight.grad.mean())
+    # print(policy.network[2].weight.grad.mean())
     optimizer.step()
 
 
