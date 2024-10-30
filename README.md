@@ -1,24 +1,26 @@
-# CS 8803-DRL class assignments for fall 2024
-Homework/assignments for the fall 2024 class CS 8803-DRL at GaTech.
+# VIME - Variational Information Maximizing Exploration
+
+## Overview
+
+This repository demonstrates how to implement **Variational Information Maximizing Exploration (VIME)** to improve exploration in reinforcement learning environments with sparse rewards. The primary goal of VIME is to encourage agents to explore unknown areas in the environment by providing intrinsic rewards based on **information gain**.
+
+### Why VIME?
+
+In reinforcement learning, agents typically rely on rewards to determine valuable actions. However, in sparse reward environments, rewards are limited or delayed, making it challenging for agents to learn efficiently. VIME addresses this by giving agents intrinsic motivation to explore, even without immediate external rewards, using the following key steps:
+- **Dynamics Model**: Models environment dynamics to estimate probabilities of state transitions.
+- **Posterior Updates**: Updates the model's beliefs based on each new experience.
+- **Intrinsic Reward Calculation**: Computes an intrinsic reward based on information gain.
+- **Total Reward**: Combines extrinsic and intrinsic rewards to balance exploration and exploitation.
+
+
+## Notebook Content
+
+The notebook tries to augement the DQN we implemented in HW1 with VIME in environments with sparse rewards. We train the agents w/wo VIME and visualize their performance.
 
 ## Setup
-Build and use the `cs8803drl` environment as follows (we recommend conda).
 
-**NOTE:** Install the GPU version of PyTorch if preferred. If you already have the GPU version of PyTorch but would like the assignment code to use CPU, then set the `ONLY_CPU` flag to `True` under `src/utils.py`. Keep in mind that using the GPU might not necessarily be faster for the problems discussed.
-
-### Python `venv`
-Setup the python virtual environemnt (requires python `3.10`).
 ```bash
-environment=cs8803drl
-python -m venv "$environment"
-source "$environment"/bin/activate
-pip install -r requirements.txt
+conda env create --name vime --file=requirements.yaml
+conda activate vime
 ```
 
-### Conda environment
-Install conda on your system and then run
-```bash
-environment=cs8803drl
-conda env create --name "$environment" --file=requirements.yaml
-conda activate "$environment"
-```
