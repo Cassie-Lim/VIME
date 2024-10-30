@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository demonstrates how to implement **Variational Information Maximizing Exploration (VIME)** to improve exploration in reinforcement learning environments with sparse rewards. The primary goal of VIME is to encourage agents to explore unknown areas in the environment by providing intrinsic rewards based on **information gain**.
+This repository contains a minimal implementation of **Variational Information Maximizing Exploration (VIME)** to improve exploration in reinforcement learning environments with sparse rewards. The primary goal of VIME is to encourage agents to explore unknown areas in the environment by providing intrinsic rewards based on **information gain**.
 
 ### Why VIME?
 
