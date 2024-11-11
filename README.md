@@ -24,3 +24,17 @@ conda env create --name vime --file=requirements.yaml
 conda activate vime
 ```
 
+## Results
+The loss curves for DQN w/wo VIME are as followed:
+![Comparison](artifacts/dqn_vs_dqn_vime_returns.png)
+
+From the demo gifs we could see DQN augmented with VIME was able to reach the mountain peak while the one without VIME failed.
+<div style="text-align: center;">
+  <img src="artifacts/dqn_policy.gif" alt="DQN Policy">
+  <p><em>DQN Policy</em></p>
+</div>
+
+<div style="text-align: center;">
+  <img src="artifacts/dqn_vime_policy.gif" alt="DQN with VIME Policy">
+  <p><em>DQN with VIME Policy</em></p>
+</div>
